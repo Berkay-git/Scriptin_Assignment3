@@ -10,7 +10,7 @@
 <div class="topnav">
     {% if not "username" in session %}  <!-- if not logged in (guest user) -->
     <p> <a href = "/index">Home Page</a>  <a href = "/events">Announced Events</a> <a href = "/login">Login</a> </p>
-    {% elif "isAdmin" == false %}  <!-- if user is logged in and not admin -->
+    {% elif session["isAdmin"] == 0 %}  <!-- if user is logged in and not admin -->
     <p> <a href = "/index">Home Page</a>  <a href = "/events">Announced Events</a>  <a href = "/profile">My Profile</a>  <a href = "/logout">Logout</a> </p>
     {% else %}  <!-- if user is logged in and is admin -->
     <p> <a href = "/index">Home Page</a>  <a href = "/managesocieties">Manage Societies</a>  <a href = "/profile">My Profile</a>  <a href = "/logout">Logout</a> </p>

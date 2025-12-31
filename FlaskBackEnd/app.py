@@ -17,6 +17,7 @@ def loginscreen():
         exist = check_user(username,password)
         if exist != None:
             session["username"] = username
+            session["isAdmin"] = exist[4]
 
         return redirect(url_for("index"))
 

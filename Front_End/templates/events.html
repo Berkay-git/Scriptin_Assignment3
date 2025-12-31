@@ -1,1 +1,17 @@
-<!DOCTYPE html>
+{% extends 'base.html' %}
+
+{% block header %}
+<h1>{% block title %}Profile{% endblock %}</h1> <!--comment-->
+{% endblock %}
+
+{% block content %}
+
+{% for a in articles %}
+  <form method="get" action="/getevent">
+    {{ a[1] }}
+    <input type="hidden" name="articleid" value="{{ a[0] }}" /> <!--ID yi alıyor burada gizli bi şekilde-->
+    <input type="submit" value="See Details" />
+  </form>
+{% endfor %}
+
+{% endblock %}
