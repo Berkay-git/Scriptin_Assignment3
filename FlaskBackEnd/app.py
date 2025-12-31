@@ -1,4 +1,5 @@
 from flask import *
+import sqlite3
 
 app = Flask(__name__, template_folder='../Front_End/templates', static_folder='../Front_End/static')
 app.secret_key = "123"
