@@ -1,16 +1,36 @@
 {% extends 'base.html' %}
 
 {% block header %}
-<h1>{% block title %}Profile{% endblock %}</h1> <!--comment-->
+<h1>{% block title %}Events Page{% endblock %}</h1> <!--comment-->
 {% endblock %}
+
+
+<h1>Events</h1>
+
 
 {% block content %}
 
-{% for a in articles %}
+{% for a in events %}
   <form method="get" action="/getevent">
-    {{ a[1] }}
+      <table border="2">
+          <tr>
+              <td>ID</td>
+              <td>Price</td>
+              <td>Name</td>
+              <td>Date</td>
+              <td>Description</td>
+              <td>Delete</td>
+          </tr>
+          <tr>
+              <td>{{a[0]}}</td>
+              <td>{{a[1]}}</td>
+              <td>{{a[2]}}</td>
+              <td>{{a[3]}}</td>
+              <td>{{a[4]}}</td>
+              <td><button type="submit" value="delete">DELETE</button></td>
+          </tr>
+      </table>
     <input type="hidden" name="articleid" value="{{ a[0] }}" /> <!--ID yi alıyor burada gizli bi şekilde-->
-    <input type="submit" value="See Details" />
   </form>
 {% endfor %}
 

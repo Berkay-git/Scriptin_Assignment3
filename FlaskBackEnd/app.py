@@ -4,6 +4,8 @@ from support import *
 app = Flask(__name__, template_folder='../Front_End/templates', static_folder='../Front_End/static')
 app.secret_key = "123"
 
+events = []
+
 @app.route("/")
 @app.route("/index")
 def index():
@@ -14,7 +16,7 @@ def loginscreen():
     if request.method == "POST":  # if method is post, it means form in login.html is submitted, check information.
         username = request.form["username"]
         password = request.form["password"]
-        exist = check_user(username,password)
+        exist = check_user(username,password) # check if username is in database
         if exist != None:
             session["username"] = username
             session["isAdmin"] = exist[4]
@@ -48,6 +50,22 @@ def register():
         conn.close()
         return redirect(url_for("loginscreen"))
     return render_template("register.html")
+
+@app.route("/events", methods=["POST","GET"])
+def seeevents ():
+    if "username" in session:
+        conn = get_db_connection()
+        c = conn.cursor()
+        c.execute("SELECT * FROM EVENT")
+        events = c.fetchall()
+        conn.close()
+
+        return render_template("events.html",events = events)
+
+    else:
+        return redirect(url_for("index"))
+
+
 
 
 
