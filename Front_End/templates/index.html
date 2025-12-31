@@ -1,20 +1,10 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Posts Page</title>
-    <link rel="stylesheet" type="text/css" href="../static/mystyle.css">
-</head>
-<body>
-<h1>Posts</h1>
+{% extends 'base.html' %}
 
-<div class="topnav"> 
-  <a href="#">Link</a> 
-  <a href="#">Link</a> 
-  <a href="#">Link</a> 
-</div> 
-<p>Click <a href="/index">here</a> to go back to the homepage</p>
-<p>Click <a href="/login">here</a> to logout</p>
 
-</body>
-</html>
+{% block header %}
+<h1>{% block title %}Home Page{% endblock %}</h1> <!--comment-->
+{% endblock %}
+
+{% block content %}
+<p>Hello!</p>
+{% endblock %}
