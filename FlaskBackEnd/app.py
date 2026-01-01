@@ -38,7 +38,7 @@ def register():
         if username_exists(username):
             return render_template("register.html",error="Username already exists")
         
-        if email.startswith("org-"):
+        if email.startswith("org-"): #email org ile başlıyorsa ilerde bu değiştirilebilir tabi ki!
             isAdmin = 1
         else :
             isAdmin = 0
@@ -50,6 +50,18 @@ def register():
         conn.close()
         return redirect(url_for("loginscreen"))
     return render_template("register.html")
+
+
+@app.get("/checkusername/<username>")  #AJAX ENTEGRE OLDU  BURASI checkussername burda paramatere alıyor username olarak ve register.html de olay
+def check(username):
+    exist = username_exists(username)
+    response = ""
+    if exist:
+        response = "Username has already been taken!"
+    return response
+
+
+
 
 @app.route("/events", methods=["POST","GET"])
 def seeevents ():

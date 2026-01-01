@@ -6,9 +6,29 @@
 
 {% block content %}
 
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <script>
+        function checkUsername(str){
+            var xhttp = new XMLHttpRequest();
+            xhttp.onreadystatechange = function(){
+                if(this.readyState == 4 && this.status == 200){
+                    document.getElementById("error").innerHTML = this.responseText;
+                }
+            };
+            xhttp.open("GET", "/checkusername/" + str, true);
+            xhttp.send();
+        }
+    </script>
+</head>
+
+
+
 <form method="POST" action="/register">
   <label>Username: </label>
-  <input type="text" name="username" required/><br/>
+      <input type="text" name="username" required onfocusout="checkUsername(this.value)" /><span id="error"></span><br/>
+
 
   <label>Password: </label>
   <input type="password" name="password" required/><br/>
