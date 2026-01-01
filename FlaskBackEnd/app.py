@@ -19,9 +19,12 @@ def loginscreen():
         exist = check_user(username,password) # check if username is in database
         if exist != None:
             session["username"] = username
-            session["isAdmin"] = exist[4]
+            session["isAdmin"] = int(exist[4])
+            return redirect(url_for("index"))
+        else:
+            return render_template("login.html", error="Invalid username or password") #Kullancıya hatayı göstermeliyiz
 
-        return redirect(url_for("index"))
+
 
     else:  # if method is get, show login.html.
         return render_template("login.html")
@@ -71,7 +74,6 @@ def seeevents ():
         c.execute("SELECT * FROM EVENT")
         events = c.fetchall()
         conn.close()
-
         return render_template("events.html",events = events)
 
     else:

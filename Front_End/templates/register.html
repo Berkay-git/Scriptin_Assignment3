@@ -11,13 +11,13 @@
     <title>Title</title>
     <script>
         function checkUsername(str){
-            var xhttp = new XMLHttpRequest();
-            xhttp.onreadystatechange = function(){
-                if(this.readyState == 4 && this.status == 200){
-                    document.getElementById("error").innerHTML = this.responseText;
+            var xhttp = new XMLHttpRequest(); //AJAX BURASI sayfa yenilemeden arka planda yapıyor işi
+            xhttp.onreadystatechange = function(){  //state değişince fonksiyon çalışması için 
+                if(this.readyState == 4 && this.status == 200){ //readyState == 4 istek tamam status 200 başarışı cevap demek
+                    document.getElementById("error").innerHTML = this.responseText; //response text bizim .py de döndürdüğümüz response
                 }
             };
-            xhttp.open("GET", "/checkusername/" + str, true);
+            xhttp.open("GET", "/checkusername/" + str, true); //burda ki trye sayeseinde async çalışıyor program
             xhttp.send();
         }
     </script>
@@ -28,7 +28,7 @@
 <form method="POST" action="/register">
   <label>Username: </label>
       <input type="text" name="username" required onfocusout="checkUsername(this.value)" /><span id="error"></span><br/>
-
+      <!--onfocusout demek başka bir kutuya tıklayınca uyarı vermesi için-->
 
   <label>Password: </label>
   <input type="password" name="password" required/><br/>
