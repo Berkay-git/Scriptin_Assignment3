@@ -54,18 +54,6 @@ def register():
         return redirect(url_for("loginscreen"))
     return render_template("register.html")
 
-
-@app.get("/checkusername/<username>")  #AJAX ENTEGRE OLDU  BURASI checkussername burda paramatere alıyor username olarak ve register.html de olay
-def check(username):
-    exist = username_exists(username)
-    response = ""
-    if exist:
-        response = "Username has already been taken!"
-    return response
-
-
-
-
 @app.route("/events", methods=["POST","GET"])
 def seeevents ():
     if "username" in session:
@@ -80,8 +68,31 @@ def seeevents ():
         return redirect(url_for("index"))
 
 
+@app.route("/managesocieties", methods=["POST","GET"])
+def managesocieties():
+    if "username" in session and session.get("isAdmin") == 1:
+        error = ""
+        success = ""
 
+        if request.method == "POST":
+            society_name = request.form.get("society_name", "").strip()
 
+            if society_name == "":
+                error = "Society name cannot be empty!"
+            elif society_exists(society_name):
+                error = "Society already exists!"
+            else:
+                conn = get_db_connection()
+                c = conn.cursor()
+                c.execute("INSERT INTO SOCIETY(name) VALUES (?)", (society_name,))
+                conn.commit()
+                conn.close()
+                success = "Society added successfully."
+
+        societies = get_societies_with_event_count()
+        return render_template("managesocieties.html", societies=societies, error=error, success=success)
+    else:
+        return redirect(url_for("index"))
 
 
 @app.route("/logout")
@@ -89,8 +100,15 @@ def logout():
     session.pop("username", None)
     return redirect(url_for('index'))  # redirects to index function above.
 
+#AJAX CHECK ROUTLER BURDA
 
-
+@app.get("/checkusername/<username>")  #AJAX ENTEGRE OLDU  BURASI checkussername burda paramatere alıyor username olarak ve register.html de olay
+def check(username):
+    exist = username_exists(username)
+    response = ""
+    if exist:
+        response = "Username has already been taken!"
+    return response
 
 if __name__ == "__main__":
     app.run()
