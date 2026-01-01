@@ -12,21 +12,21 @@
 
 {% for a in events %}
   <form method="get" action="/getevent">
-      <table border="2">
+      <table border="1">
           <tr>
-              <td>ID</td>
-              <td>Price</td>
               <td>Name</td>
-              <td>Date</td>
+              <td>Time & Date</td>
+              <td>Societies</td>
               <td>Description</td>
+              <td>Entry Fee</td>
               <td>Delete</td>
           </tr>
           <tr>
-              <td>{{a[0]}}</td>
-              <td>{{a[1]}}</td>
-              <td>{{a[2]}}</td>
-              <td>{{a[3]}}</td>
               <td>{{a[4]}}</td>
+              <td>{{a[3]}}</td>
+              <td>{{a[2]}}</td>
+              <td>{{a[4]}}</td>
+              <td>{{a[1]}}</td>
               <td><button type="submit" value="delete">DELETE</button></td>
           </tr>
       </table>

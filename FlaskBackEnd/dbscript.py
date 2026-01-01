@@ -16,7 +16,9 @@ def createDatabase(dbname):
               "entryPrice INTEGER,"
               "name TEXT NOT NULL UNIQUE,"
               "timeDate TEXT,"
-              "description TEXT)")
+              "description TEXT,"
+              "username TEXT,"  # taken from USER table.
+              "FOREIGN KEY (username) REFERENCES USER(username))")  # username is FK from USER table.
     
     c.execute("CREATE TABLE IF NOT EXISTS SOCIETY("
               "societyID INTEGER PRIMARY KEY AUTOINCREMENT,"
@@ -38,8 +40,8 @@ def insertRecords(dbname):
     c.execute("INSERT INTO USER(username, password, name, email) VALUES (?,?,?,?)", ("Client1", "123","Berkay","berkay@gmail.com"))
     c.execute("INSERT INTO USER(username, password, name, email, isAdmin) VALUES (?,?,?,?,?)", ("Admin1", "123","Murat","murat@gmail.com",1))
 
-    c.execute("INSERT INTO EVENT(entryPrice, name, timeDate, description) VALUES (?,?,?,?)",(50, "Tech Talk", "2025-05-10", "Technology conference"))
-    c.execute("INSERT INTO EVENT(entryPrice, name, timeDate, description) VALUES (?,?,?,?)",(30, "AI Workshop", "2025-06-01", "Hands-on AI session"))
+    c.execute("INSERT INTO EVENT(entryPrice, name, timeDate, description, username) VALUES (?,?,?,?,?)",(50, "Tech Talk", "2025-05-10", "Technology conference", "Client1"))
+    c.execute("INSERT INTO EVENT(entryPrice, name, timeDate, description, username) VALUES (?,?,?,?,?)",(30, "AI Workshop", "2025-06-01", "Hands-on AI session", "Client1"))
 
     c.execute("INSERT INTO SOCIETY(name) VALUES (?)",("Computer Society",))
     c.execute("INSERT INTO SOCIETY(name) VALUES (?)",("AI Society",))
