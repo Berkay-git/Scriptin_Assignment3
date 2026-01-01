@@ -71,7 +71,7 @@ def seeevents ():
     if "username" in session:
         conn = get_db_connection()
         c = conn.cursor()
-        c.execute("SELECT * FROM EVENT")
+        c.execute("SELECT * FROM EVENT e, USER u WHERE e.username = u.username")
         events = c.fetchall()
         conn.close()
         return render_template("events.html",events = events)
