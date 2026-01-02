@@ -54,18 +54,75 @@ def register():
         return redirect(url_for("loginscreen"))
     return render_template("register.html")
 
+
 @app.route("/events", methods=["POST","GET"])
 def seeevents ():
     if "username" in session:
         conn = get_db_connection()
         c = conn.cursor()
-        c.execute("SELECT * FROM EVENT e, USER u WHERE e.username = u.username")
-        events = c.fetchall()
+        c.execute("SELECT e.name, e.timeDate, GROUP_CONCAT(s.name, ', '), e.description, e.entryPrice, e.username "
+                  "FROM Event e, SOCIETY s, USER u, EVENTSOCIETY es "
+                  "WHERE u.username = e.username "
+                    "AND e.eventID = es.eventID "
+                    "AND es.societyID = s.societyID "
+                  "GROUP BY e.eventID")
+
+        userEvents = []
+        allEvents = c.fetchall() # right now allEvents contains all events created by all users.
+        for each in allEvents:   # iterate all events
+            if each[5] == session["username"]:  # show events based on logged in user. If username matches, append it.
+                userEvents.append(each) # userEvents will contain events that specifically created by logged in user.
+
+        c.execute("SELECT s.societyID, s.name FROM SOCIETY s")
+        societies = c.fetchall() # send all society names for society checkbox options in events.html
+        #societies=societies.
+
         conn.close()
-        return render_template("events.html",events = events)
+        return render_template("events.html",events = userEvents, societies=societies)
 
     else:
         return redirect(url_for("index"))
+
+
+@app.route("/addevent", methods=["POST"])
+def addEvent():
+    if "username" not in session:
+        return redirect(url_for("index"))
+
+    name = request.form["name"]
+    timeDate = request.form["timeDate"]
+    description = request.form["description"] # get values from the form.
+
+
+    societies = request.form.getlist("societies")
+
+    fee_type = request.form["fee"]  # can be either free or paid.
+    if fee_type == "free":
+        entry_price = 'Free'
+    else:
+        entry_price = request.form["entryPrice"]  # if type is paid, also get the price.
+
+    conn = get_db_connection()
+    c = conn.cursor()
+
+    c.execute("SELECT name FROM EVENT")
+    event_names=c.fetchall()
+    if name in event_names: # check if event already exists. If yes return with error message.
+        return render_template('events.html' ,error="Event already exists!, try again...")
+
+    # insert pulled data to the database.
+    c.execute("INSERT INTO Event (name, timeDate, description, entryPrice, username) VALUES (?, ?, ?, ?, ?)",(name, timeDate, description, entry_price, session["username"]))
+
+    currentID=c.lastrowid  # c.lastrowid gives the current ID of the event.
+
+    for each in societies:  # insert event & society connections one by one.
+        c.execute("INSERT INTO EventSociety (eventID, societyID) VALUES (?, ?)",(currentID, each))
+
+    conn.commit()
+    conn.close()
+    msg = "Event added successfully!"
+    return redirect(url_for('seeevents'))
+
 
 
 @app.route("/managesocieties", methods=["POST","GET"])

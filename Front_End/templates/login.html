@@ -2,6 +2,13 @@
 
 {% block header %}
 <h1>{% block title %}Login{% endblock %}</h1> <!--comment-->
+
+{% if error %}
+    <script>
+        alert("{{ error }}");
+    </script>
+{% endif %}
+
 {% endblock %}
 
 {% block content %}

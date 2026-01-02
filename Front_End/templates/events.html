@@ -2,6 +2,13 @@
 
 {% block header %}
 <h1>{% block title %}Events Page{% endblock %}</h1> <!--comment-->
+
+{% if error %}
+    <script>
+        alert("{{ error }}");
+    </script>
+{% endif %}
+
 {% endblock %}
 
 
@@ -9,24 +16,56 @@
 
 
 {% block content %}
+    <form method="POST" action="/addevent" style="margin: 0 15px;">
+        <label>Name: </label>
+        <input type="text" name="name" required/><br/><br/>
 
+        <label>Time & Date: </label>
+        <input type="text" name="timeDate" required/><br/><br/>
+
+
+        <label>Societies: </label><br/>
+        {% for society in societies %}
+            <input type="checkbox" style="margin: 0 15px;" name="societies" value="{{ society[0] }}">{{ society[1] }} <br> <!--society[0] is for ID and society[1] is for the name.-->
+        {% endfor %}
+        <br/>
+        <label>Description: </label>
+        <input type="text" name="description" required/><br/><br/>
+
+        <label>Entry Fee: </label>
+        <input type="radio" id="free" name="fee" value="free" checked onclick="feeAction()"/>Free
+        <input type="radio" id="paid" name="fee" value="paid" onclick="feeAction()"/>Paid<br/>
+
+        <div id="hidden_container" style="display: none;">
+        <label>Enter Amount:</label>
+            <input type="number" name="entryPrice" id="feeField" placeholder="0.00$"/>
+        </div></br>
+
+
+
+        <input type="submit" value="Add Event"/>
+    </form>
+
+
+<table class="styled-table">
+      <tr>
+          <td>Name</td>
+          <td>Time & Date</td>
+          <td>Societies</td>
+          <td>Description</td>
+          <td>Entry Fee</td>
+          <td>Delete</td>
+      </tr>
+</table>
 {% for a in events %}
   <form method="get" action="/getevent">
-      <table border="1">
+      <table class="styled-table">
           <tr>
-              <td>Name</td>
-              <td>Time & Date</td>
-              <td>Societies</td>
-              <td>Description</td>
-              <td>Entry Fee</td>
-              <td>Delete</td>
-          </tr>
-          <tr>
-              <td>{{a[4]}}</td>
-              <td>{{a[3]}}</td>
-              <td>{{a[2]}}</td>
-              <td>{{a[4]}}</td>
+              <td>{{a[0]}}</td>
               <td>{{a[1]}}</td>
+              <td>{{a[2]}}</td>
+              <td>{{a[3]}}</td>
+              <td>{{a[4]}}</td>
               <td><button type="submit" value="delete">DELETE</button></td>
           </tr>
       </table>
@@ -34,4 +73,23 @@
   </form>
 {% endfor %}
 
+<script>
+    function feeAction() {
+        var paid = document.getElementById("paid");
+        var container = document.getElementById("hidden_container");
+        var feeField = document.getElementById("feeField");
+
+        if (paid.checked) { // If paid is checked, show hidden box.
+            container.style.display = "block";
+            feeField.required = true; // require input from the user
+        }
+        else {  // else means free is checked, hide the box
+            container.style.display = "none";
+            feeField.value = "";
+            feeField.required = false; // remove required input
+        }
+    }
+</script>
+
 {% endblock %}
+

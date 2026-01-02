@@ -41,3 +41,15 @@ body {
   background-color: #f1f1f1;
   padding: 10px;
 }
+
+/* styles for table in Announced Events */
+.styled-table {
+    border-collapse: collapse; /* this will make table much cleaner by removing space */
+    margin: 0 15px;
+}
+
+.styled-table th,td {
+    border: 1px solid black;
+    padding: 5px 5px;        /* cleaner table */
+    width: 150px;
+}
