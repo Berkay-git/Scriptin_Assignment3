@@ -1,1 +1,39 @@
-<!DOCTYPE html>
+{% extends 'base.html' %}
+
+{% block header %}
+<h1>{% block title %}Event Details{% endblock %}</h1>
+{% endblock %}
+
+{% block content %}
+
+<table border="1">
+    <tr>
+        <td>Name</td>
+        <td>{{ event[0] }}</td>
+    </tr>
+    <tr>
+        <td>Time & Date</td>
+        <td>{{ event[1] }}</td>
+    </tr>
+    <tr>
+        <td>Description</td>
+        <td>{{ event[2] }}</td>
+    </tr>
+    <tr>
+        <td>Entry Fee</td>
+        <td>{{ event[3] }}</td>
+    </tr>
+    <tr>
+        <td>Societies</td>
+        <td>
+            {% for s in societies %}
+                {{ s[0] }}{% if not loop.last %}, {% endif %}
+            {% endfor %}
+        </td>
+    </tr>
+</table>
+
+<br>
+<a href="/index">← Back to Home Page</a>
+
+{% endblock %}

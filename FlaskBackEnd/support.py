@@ -27,7 +27,7 @@ def username_exists(username): #O usernameli adam var mı yok mu
     
     return False
 
-def society_exists(name):
+def society_exists(name):  #ADMİN KULLANIYOR BUNU
      conn = get_db_connection()
      c = conn.cursor()
      c.execute("SELECT 1 FROM SOCIETY WHERE name=?",(name,))
@@ -39,7 +39,7 @@ def society_exists(name):
      return False
 
 
-def get_societies_with_event_count():
+def get_societies_with_event_count(): # ADMİN İÇİN
     conn = get_db_connection()
     c = conn.cursor()
 
@@ -62,3 +62,74 @@ def get_user(username):
     user = c.fetchone()
     conn.close()
     return user
+
+def get_event_by_id(eventID):  #home page için 
+    conn = get_db_connection()
+    c = conn.cursor()
+
+    c.execute(
+        "SELECT name, timeDate, description, entryPrice "
+        "FROM EVENT WHERE eventID=?",
+        (eventID,)
+    )
+
+    event = c.fetchone()
+    conn.close()
+    return event
+
+
+def get_event_societies(eventID): #See more da gözügenler için 
+    conn = get_db_connection()
+    c = conn.cursor()
+
+    c.execute(
+        "SELECT s.name "
+        "FROM SOCIETY s, EVENTSOCIETY es "
+        "WHERE s.societyID = es.societyID "
+        "AND es.eventID=?",
+        (eventID,)
+    )
+
+    societies = c.fetchall()
+    conn.close()
+    return societies
+
+def get_events_grouped_by_society():
+    conn = get_db_connection()
+    c = conn.cursor()
+
+    c.execute(
+        "SELECT s.name, e.eventID, e.name, e.description, e.entryPrice "
+        "FROM SOCIETY s, EVENT e, EVENTSOCIETY es "
+        "WHERE s.societyID = es.societyID "
+        "AND e.eventID = es.eventID "
+        "ORDER BY s.name, e.name"
+    )
+
+    #SELECTTEN DOLAYI
+    #row[0] → Society adı
+    #row[1] → Event ID
+    #row[2] → Event adı (Title)
+    #row[3] → Event description
+    #row[4] → Entry price (Free / Paid)
+
+    rows = c.fetchall()
+    conn.close()
+
+    grouped = {}
+
+    for row in rows:
+        society = row[0]
+        if society not in grouped:
+            grouped[society] = []
+        
+        if row[4] == "Free":
+            event_type = "Free Event"
+        else:
+            event_type = "Paid Event"
+             
+
+        grouped[society].append((row[1], row[2], row[3], event_type))
+
+    return grouped
+#Değiştirmeden ön ceki hali 

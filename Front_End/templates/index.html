@@ -1,10 +1,33 @@
 {% extends 'base.html' %}
 
-
 {% block header %}
-<h1>{% block title %}Home Page{% endblock %}</h1> <!--comment-->
+<h1>{% block title %}Home Page{% endblock %}</h1>
 {% endblock %}
 
 {% block content %}
-<p>If you don't have an account, <a href="/register">Register Now!</a></p>
+
+{% for society, events in societies.items() %}
+<h2>{{ society }}</h2>
+
+<table border="1">
+  <tr>
+    <th>Title</th>
+    <th>Description</th>
+    <th>Type</th>
+    <th></th>
+  </tr>
+
+  {% for e in events %}
+  <tr>
+    <td>{{ e[1] }}</td>
+    <td>{{ e[2] }}</td>
+    <td>{{ e[3] }}</td>
+    <td><a href="/event/{{ e[0] }}">See More</a></td>
+  </tr>
+  {% endfor %}
+</table>
+
+{% endfor %}
+
+
 {% endblock %}

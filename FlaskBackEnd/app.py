@@ -9,7 +9,11 @@ events = []
 @app.route("/")
 @app.route("/index")
 def index():
-    return render_template("index.html")
+    societies = get_events_grouped_by_society()
+    return render_template("index.html", societies=societies)
+
+
+
 
 @app.route("/login", methods=["POST", "GET"])
 def loginscreen():
@@ -182,6 +186,22 @@ def profile():
     else:
         return redirect(url_for("index"))
 
+
+@app.route("/event/<int:eventID>")
+def event_detail(eventID):
+    event = get_event_by_id(eventID)
+
+    if not event:
+        return redirect(url_for("index"))
+
+    societies = get_event_societies(eventID)
+
+    return render_template(
+        "event.html",
+        event=event,
+        societies=societies,
+        show_navbar= False # Bu sayede artık eventte yuakrdakiler yok
+    )
 
 
 @app.route("/logout")
