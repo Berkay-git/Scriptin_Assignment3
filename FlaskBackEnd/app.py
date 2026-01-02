@@ -94,6 +94,38 @@ def managesocieties():
     else:
         return redirect(url_for("index"))
 
+@app.route("/profile", methods=["POST","GET"])
+def profile():
+    if "username" in session:
+        error = ""
+        success = ""
+
+        if request.method == "POST": #Edit butonuna bastın
+            password = request.form.get("password", "").strip()
+            name = request.form.get("name", "").strip()
+            email = request.form.get("email", "").strip()
+            if password == "" or name == "" or email == "":
+                error = "All fields must be filled!"
+            else:
+                conn = get_db_connection()
+                c = conn.cursor()
+                c.execute("UPDATE USER SET password=?, name=?, email=? WHERE username=?",(password, name, email,session["username"])) #burda direkt username de yollanır ama güvenlik açığı olmasın diye 
+                conn.commit()
+                conn.close()
+                success = "Profile updated successfully."
+        user = get_user(session["username"]) #burda direkt username de yollanır ama güvenlik açığı olmasın diye 
+        return render_template(
+            "profile.html",
+            user=user,
+            error=error,
+            success=success
+        )
+
+
+    else:
+        return redirect(url_for("index"))
+
+
 
 @app.route("/logout")
 def logout():

@@ -54,3 +54,11 @@ def get_societies_with_event_count():
     societies  = c.fetchall()
     conn.close()
     return societies 
+
+def get_user(username):
+    conn = get_db_connection()
+    c = conn.cursor()
+    c.execute("SELECT username, password, name, email FROM USER WHERE username=?",(username,))
+    user = c.fetchone()
+    conn.close()
+    return user
