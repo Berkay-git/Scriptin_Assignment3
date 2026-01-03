@@ -1,10 +1,47 @@
 {% extends 'base.html' %}
 
 {% block header %}
-<h1>{% block title %}Register{% endblock %}</h1> <!--comment-->
+<h1 style="color: rebeccapurple; margin-left: 15px;">{% block title %}Register{% endblock %}</h1> <!--comment-->
 {% endblock %}
 
 {% block content %}
+
+<script>
+    function countDigits(pwd){
+        var i;
+        var counter = 0;
+        for(i=0; i<pwd.length; i++){
+            if("0123456789".search(pwd[i])!= -1)
+            counter++;
+        }
+        return counter;
+    }
+
+    function validate(){
+        var pass = document.forms["registerform"]["password"].value;
+        var error =""
+
+        if(pass.search(/[a-z]/) == -1)  // it will return -1 if there is no lowercase letter
+            error += "The password must contain at least one lowercase letter!\n";
+
+        if(pass.search(/[A-Z]/) == -1)  // it will return -1 if there is no uppercase letter
+            error += "The password must contain at least one uppercase letter!\n";
+
+        if(countDigits(pass)<1)
+            error += "The password must contain at least one digit!\n";
+
+        if(pass.length < 10)
+            error += "The password must contain at least 10 characters!\n";
+
+        if(error.length == 0)
+            return true;
+        else{
+            alert(error);
+            return false;
+        }
+    }
+
+</script>
 
 <head>
     <meta charset="UTF-8">
@@ -25,21 +62,21 @@
 
 
 
-<form method="POST" action="/register">
+<form method="POST" action="/register" class="styled-table" onsubmit="return validate()" name="registerform">
   <label>Username: </label>
       <input type="text" name="username" required onfocusout="checkUsername(this.value)" /><span id="error"></span><br/>
       <!--onfocusout demek başka bir kutuya tıklayınca uyarı vermesi için-->
-
+    </br>
   <label>Password: </label>
   <input type="password" name="password" required/><br/>
-
+    </br>
   <label>Fullname: </label>
   <input type="text" name="name" required/><br/>
-
-  <label>email: </label>
+    </br>
+  <label>e-mail: </label>
   <input type="text" name="email" required/><br/>
-
-  <input type="submit" value="Register" />
+    </br>
+  <input type="submit" value="Register" style="margin-left: 198px" />
 
 </form>
 

@@ -1,12 +1,13 @@
 {% extends 'base.html' %}
 
 {% block header %}
-<h1>{% block title %}Event Details{% endblock %}</h1>
+<h1 style="margin-left: 15px">{% block title %}Event Details{% endblock %}</h1>
+<link rel="stylesheet" href="../static/mystyle.css">  <!-- we used "../static/" because to find static folder, we need to go 1 step back since we are in /event/2-->
 {% endblock %}
 
 {% block content %}
 
-<table border="1">
+<table class="styled-table">
     <tr>
         <td>Name</td>
         <td>{{ event[0] }}</td>
@@ -34,6 +35,6 @@
 </table>
 
 <br>
-<a href="/index">← Back to Home Page</a>
+<a href="/index" style="margin-left: 15px">← Back to Home Page</a>
 
 {% endblock %}

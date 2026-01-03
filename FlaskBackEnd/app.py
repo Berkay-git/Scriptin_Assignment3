@@ -9,8 +9,24 @@ events = []
 @app.route("/")
 @app.route("/index")
 def index():
+    error_message = request.args.get("error")
     societies = get_events_grouped_by_society()
-    return render_template("index.html", societies=societies)
+    socNames = getSocieties()
+
+    return render_template("index.html", societies=societies, socNames = socNames, error = error_message)
+
+@app.route("/search")
+def search():
+    keyword = request.args.get("search", "")  # get the keyword from front-end.
+
+    selected_society = request.args.get("society_filter", "all") # get the selected society from front-end.
+
+
+    searchedSocieties = searchInDatabase(keyword, selected_society) # this will take keyword and selection, then it will find corresponding societies
+
+    socNames = getSocieties()  # take all society names for combo box as usual.
+
+    return render_template("index.html", societies=searchedSocieties, socNames = socNames)
 
 
 
@@ -64,28 +80,32 @@ def seeevents ():
     if "username" in session:
         conn = get_db_connection()
         c = conn.cursor()
-        c.execute("SELECT e.name, e.timeDate, GROUP_CONCAT(s.name, ', '), e.description, e.entryPrice, e.username "
+        c.execute("SELECT e.name, e.timeDate, GROUP_CONCAT(s.name, ', '), e.description, e.entryPrice, e.username, e.eventID "
                   "FROM Event e, SOCIETY s, USER u, EVENTSOCIETY es "
                   "WHERE u.username = e.username "
                     "AND e.eventID = es.eventID "
                     "AND es.societyID = s.societyID "
                   "GROUP BY e.eventID")
+        # event name, event time & date, society name(s), event description and event entry price will be used to print events one by one.
+        # event username will be used to check if logged in user and event creater user is the same user or not.
+        # event ID will be used to delete corresponding event when "Delete" button is clicked.
 
         userEvents = []
         allEvents = c.fetchall() # right now allEvents contains all events created by all users.
         for each in allEvents:   # iterate all events
-            if each[5] == session["username"]:  # show events based on logged in user. If username matches, append it.
+            if each[5] == session["username"]:  # to show events based on logged in user, we check if logged in username and event.username in database matches.
                 userEvents.append(each) # userEvents will contain events that specifically created by logged in user.
 
         c.execute("SELECT s.societyID, s.name FROM SOCIETY s")
-        societies = c.fetchall() # send all society names for society checkbox options in events.html
-        #societies=societies.
+        societies = c.fetchall() # send all society names for society checkbox options in events.html (and also IDs to find out which ones are clicked.)
+
 
         conn.close()
         return render_template("events.html",events = userEvents, societies=societies)
 
     else:
-        return redirect(url_for("index"))
+        error = "You need to Login to Create an Event!!!"
+        return redirect(url_for("index", error=error))
 
 
 @app.route("/addevent", methods=["POST"])
@@ -126,6 +146,28 @@ def addEvent():
     conn.close()
     msg = "Event added successfully!"
     return redirect(url_for('seeevents'))
+
+
+@app.route("/delete_event", methods=["POST"])
+def delete_event():
+    if "username" not in session:
+        return redirect(url_for("login")) # if not logged in, redirect to login.
+
+
+    event_id = request.form["event_id"] # get eventID from the hidden field in events.html.
+
+    conn = get_db_connection()
+    c = conn.cursor()
+
+    c.execute("DELETE FROM EVENTSOCIETY WHERE eventID = ?", (event_id,)) # first delete event from EventSociety
+
+    c.execute("DELETE FROM EVENT WHERE eventID = ? AND username = ?", (event_id, session["username"])) # next, delete event directly from EVENT table.
+    # I made sure that only logged in user can delete his/her events by adding "username = ?" and providing session["username"]
+
+    conn.commit() # save and close.
+    conn.close()
+
+    return redirect(url_for("seeevents")) # show the new page.
 
 
 
@@ -216,7 +258,7 @@ def check(username):
     exist = username_exists(username)
     response = ""
     if exist:
-        response = "Username has already been taken!"
+        response = " Username has already been taken!"
     return response
 
 if __name__ == "__main__":

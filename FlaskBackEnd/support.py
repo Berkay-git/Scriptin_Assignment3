@@ -132,4 +132,68 @@ def get_events_grouped_by_society():
         grouped[society].append((row[1], row[2], row[3], event_type))
 
     return grouped
-#Değiştirmeden ön ceki hali 
+
+def getSocieties():
+    conn = get_db_connection()
+    c = conn.cursor()
+
+    c.execute("SELECT s.name FROM SOCIETY s")
+    socNames = c.fetchall()
+    conn.close()
+    return socNames
+
+
+def searchInDatabase(keyword, selectedSociety):
+    conn = get_db_connection()
+    c = conn.cursor()
+
+    key = "%" + keyword + "%"  # having our keyword between '%' signs will help us to match 'feren' with 'conference' because % sign doesn't care what is after or before the keyword.
+
+    if selectedSociety == "all": # if 'all societies' is selected, then we will query all events that match keyword.
+        c.execute("SELECT s.name, e.eventID, e.name, e.description, e.entryPrice "
+                  "FROM EVENT e, EVENTSOCIETY es, SOCIETY s "
+                  "WHERE e.eventID = es.eventID "
+                  "AND es.societyID = s.societyID "
+                  "AND (e.name LIKE ? OR e.description LIKE ?)",(key, key))
+
+    else: # if a specific society is selected, we will come to the else part. Here we will add one more condition. s.name must match with selected society.
+        c.execute("SELECT s.name, e.eventID, e.name, e.description, e.entryPrice "
+                  "FROM EVENT e, EVENTSOCIETY es, SOCIETY s "
+                  "WHERE e.eventID = es.eventID "
+                  "AND es.societyID = s.societyID "
+                  "AND s.name = ? "
+                  "AND (e.name LIKE ? OR e.description LIKE ?)",(selectedSociety, key, key))
+
+    results = c.fetchall()  # get query result and close the connection.
+    conn.close()
+
+
+    grouped_events = {}  # create a dictionary to populate it and send it to front-end.
+
+
+    if selectedSociety != "all":              # specifically if there is a certain society selected in combo box,
+        grouped_events[selectedSociety] = []  # initialize the key value so that it shows up even though it is empty.
+
+    for row in results: # assign each event detail to variables, for easy process.
+        soc_name = row[0]
+        event_id = row[1]
+        event_name = row[2]
+        event_desc = row[3]
+        price = row[4]
+
+
+        if price == 0 or price is None:
+            event_type = "Free Event" # will be shown in front-end.
+        else:
+            event_type = "Paid Event"
+
+        event_data = [event_id, event_name, event_desc, event_type] # this is the format front end expects. (id,name,description,type)
+
+
+        if soc_name in grouped_events:
+            grouped_events[soc_name].append(event_data) # if we have this society in dictionary, append event.
+        else:
+            grouped_events[soc_name] = [event_data]   # if we don't have this society in dictionary, create a new event.
+
+    # finally send the dictionary back. at this point each society can have zero or multiple events assigned to them.
+    return grouped_events

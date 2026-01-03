@@ -53,3 +53,9 @@ body {
     padding: 5px 5px;        /* cleaner table */
     width: 150px;
 }
+
+.styled-table label {
+    display: inline-block;
+    width: 88px;
+    gap: 10px;
+}

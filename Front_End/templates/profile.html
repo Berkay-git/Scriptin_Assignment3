@@ -1,13 +1,13 @@
 {% extends 'base.html' %}
 
 {% block header %}
-<h1>{% block title %}My Profile{% endblock %}</h1>
+<h1 style="margin-left: 15px; color: #104331">{% block title %}My Profile{% endblock %}</h1>
 {% endblock %}
 
 {% block content %}
 
 <form method="POST" action="/profile">
-  <table border="1">
+  <table class="styled-table">
     <tr>
       <td>Username</td>
       <td>
@@ -45,11 +45,11 @@
 </form>
 
 {% if error %}
-  <p style="color:red;">{{ error }}</p>
+  <p style="color:red; margin-left: 15px;">{{ error }}</p>
 {% endif %}
 
 {% if success %}
-  <p style="color:green;">{{ success }}</p>
+  <p style="color:green; margin-left: 15px;">{{ success }}</p>
 {% endif %}
 
 {% endblock %}

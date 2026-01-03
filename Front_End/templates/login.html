@@ -1,7 +1,7 @@
 {% extends 'base.html' %}
 
 {% block header %}
-<h1>{% block title %}Login{% endblock %}</h1> <!--comment-->
+<h1 style="color: darkblue; margin-left: 15px;">{% block title %}Login{% endblock %}</h1> <!--comment-->
 
 {% if error %}
     <script>
@@ -13,14 +13,14 @@
 
 {% block content %}
 
-<form method="POST" action="/login">
+<form method="POST" action="/login" class="styled-table">
   <label>Username: </label>
-  <input type="text" name="username" required/><br/>
+  <input type="text" name="username" required/><br/><br/>
 
   <label>Password: </label>
-  <input type="password" name="password" required/><br/>
+  <input type="password" name="password" required/><br/><br/>
 
-  <input type="submit" value="Login" />
+  <input type="submit" value="Login" style="margin-left: 214px"/>
 
 </form>
 

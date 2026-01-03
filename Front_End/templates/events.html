@@ -1,14 +1,7 @@
 {% extends 'base.html' %}
 
 {% block header %}
-<h1>{% block title %}Events Page{% endblock %}</h1> <!--comment-->
-
-{% if error %}
-    <script>
-        alert("{{ error }}");
-    </script>
-{% endif %}
-
+<h1 style="margin-left: 15px; color: #6a0b68">{% block title %}Events Page{% endblock %}</h1> <!--comment-->
 {% endblock %}
 
 
@@ -46,7 +39,7 @@
         <input type="submit" value="Add Event"/>
     </form>
 
-
+</br></br>
 <table class="styled-table">
       <tr>
           <td>Name</td>
@@ -57,8 +50,15 @@
           <td>Delete</td>
       </tr>
 </table>
+{% if not events %}
+<table class="styled-table">
+          <tr>
+              <p style="margin-left: 15px">There are no events added by this user.</p>
+          </tr>
+</table>
+{% else %}
 {% for a in events %}
-  <form method="get" action="/getevent">
+  <form method="POST" action="/delete_event">
       <table class="styled-table">
           <tr>
               <td>{{a[0]}}</td>
@@ -66,12 +66,13 @@
               <td>{{a[2]}}</td>
               <td>{{a[3]}}</td>
               <td>{{a[4]}}</td>
-              <td><button type="submit" value="delete">DELETE</button></td>
+              <td><button type="submit" onclick="return confirm('Are you sure you want to delete this Event?')">DELETE</button></td>
           </tr>
       </table>
-    <input type="hidden" name="articleid" value="{{ a[0] }}" /> <!--ID yi alıyor burada gizli bi şekilde-->
+    <input type="hidden" name="event_id" value="{{ a[6] }}" /> <!--take the eventID here quietly, this will help us to distinguish which event will be deleted.-->
   </form>
 {% endfor %}
+{% endif %}
 
 <script>
     function feeAction() {

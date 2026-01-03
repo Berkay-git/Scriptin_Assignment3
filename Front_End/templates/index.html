@@ -1,15 +1,41 @@
 {% extends 'base.html' %}
 
 {% block header %}
-<h1>{% block title %}Home Page{% endblock %}</h1>
+<h1 style="margin-left: 15px">{% block title %}Home Page{% endblock %}</h1>
+
+{% if error %}
+    <script>
+        alert("{{ error }}");
+    </script>
+{% endif %}
+
 {% endblock %}
 
 {% block content %}
 
-{% for society, events in societies.items() %}
-<h2>{{ society }}</h2>
+<form action="/search" method="GET">
 
-<table border="1">
+    <p style="margin-left: 253px">
+        <input type="text" name="search">
+
+        <select name="society_filter">
+            <option value="all">All Societies</option>
+            {% for each in socNames %}
+            <option value="{{ each[0] }}">{{ each[0] }}</option> <!-- each[0] is society name. Assign them to combo box one by one.-->
+            {% endfor %}
+        </select>
+
+        <button type="submit">Search</button>
+    </p>
+</form>
+
+
+{% for society, events in societies.items() %}  <!-- This looping representation will allow us to print multiple events on one society. -->
+<h2 style="margin: 15px 15px;">{{ society }}</h2>
+
+{% if events | length > 0 %} <!------    IF THERE ARE EVENTS PRINT THEM      --------->
+
+<table class="styled-table">
   <tr>
     <th>Title</th>
     <th>Description</th>
@@ -25,7 +51,12 @@
     <td><a href="/event/{{ e[0] }}">See More</a></td>
   </tr>
   {% endfor %}
+
 </table>
+
+{% else %}  <!----------- IF THERE ARE NO EVENTS, PRINT 'NO EVENTS' ----------->
+    <p style="margin-left: 15px;">No events</p>
+{% endif %} <!--   END OF WHETHER SOCIETY HAS EVENT OR NOT CHECKS     -->
 
 {% endfor %}
 

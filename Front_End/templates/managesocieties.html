@@ -1,28 +1,28 @@
 {% extends 'base.html' %}
 
 {% block header %}
-<h1>{% block title %}Manage Societies{% endblock %}</h1>
+<h1 style="margin-left:15px; color:#8d1616;">{% block title %}Manage Societies{% endblock %}</h1>
 {% endblock %}
 
 {% block content %}
 
-<form method="POST" action="/managesocieties">
+<form method="POST" action="/managesocieties" style="margin-left: 15px">
   <label>Society Name:</label>
   <input type="text" name="society_name" required>
   <input type="submit" value="Add Society">
 </form>
 
 {% if error %}
-  <p style="color:red;">{{ error }}</p>
+  <p style="color:red; margin-left:15px;">{{ error }}</p>
 {% endif %}
 
 {% if success %}
-  <p style="color:green;">{{ success }}</p>
+  <p style="color:green; margin-left:15px;">{{ success }}</p>
 {% endif %}
 
 <hr>
 
-<table border="1">
+<table class="styled-table">
   <tr>
     <td>Society Name</td>
     <td>The number of events</td>
