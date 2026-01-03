@@ -39,17 +39,17 @@ def society_exists(name):  #ADMİN KULLANIYOR BUNU
      return False
 
 
-def get_societies_with_event_count(): # ADMİN İÇİN
+def get_societies_with_event_count(): # for admin
     conn = get_db_connection()
     c = conn.cursor()
 
-    # LEFT JOIN: event'i yoksa bile society listelensin, count 0 gelsin
+    # LEFT JOIN: even if it doesnt have event, list the society, make count 0
     c.execute(
-        'SELECT s.name, COUNT(es.eventID) ' #Burda ne göstermek istiyoruz onları gösteriyorum
-        'FROM SOCIETY s LEFT JOIN EVENTSOCIETY es ' #Tüm societleri göster. societilerle EVENTSOCIETY’yi eşleştiriyorum Society varsa → her zaman listede Event’i yoksa → yine listede Sadece sağ taraf (EVENTSOCIETY) boş kalabilir
-        'ON s.societyID = es.societyID ' #Aynı ID’ye sahip olanları eşleştir.
-        'GROUP BY s.societyID, s.name ' #“Aynı society’ye ait olanları tek satırda topla.
-        'ORDER BY s.name'#En son da alfabetik sıraya diz.
+        'SELECT s.name, COUNT(es.eventID) ' # write here what we need to show.
+        'FROM SOCIETY s LEFT JOIN EVENTSOCIETY es ' #Tüm societleri göster. (EVENTSOCIETY) may stay empty.
+        'ON s.societyID = es.societyID ' # list those who have same ID's.
+        'GROUP BY s.societyID, s.name ' # list those who have same society name.
+        'ORDER BY s.name'# reorder in alphabetic order
     )
     societies  = c.fetchall()
     conn.close()
@@ -63,7 +63,7 @@ def get_user(username):
     conn.close()
     return user
 
-def get_event_by_id(eventID):  #home page için 
+def get_event_by_id(eventID):  #for home page
     conn = get_db_connection()
     c = conn.cursor()
 
@@ -78,7 +78,7 @@ def get_event_by_id(eventID):  #home page için
     return event
 
 
-def get_event_societies(eventID): #See more da gözügenler için 
+def get_event_societies(eventID): # for 'see more'
     conn = get_db_connection()
     c = conn.cursor()
 
@@ -106,10 +106,10 @@ def get_events_grouped_by_society():
         "ORDER BY s.name, e.name"
     )
 
-    #SELECTTEN DOLAYI
-    #row[0] → Society adı
+    # due to 'select'
+    #row[0] → Society name
     #row[1] → Event ID
-    #row[2] → Event adı (Title)
+    #row[2] → Event name (Title)
     #row[3] → Event description
     #row[4] → Entry price (Free / Paid)
 

@@ -42,7 +42,7 @@ def loginscreen():
             session["isAdmin"] = int(exist[4])
             return redirect(url_for("index"))
         else:
-            return render_template("login.html", error="Invalid username or password") #Kullancıya hatayı göstermeliyiz
+            return render_template("login.html", error="Invalid username or password") # show error to user.
 
 
 
@@ -61,7 +61,7 @@ def register():
         if username_exists(username):
             return render_template("register.html",error="Username already exists")
         
-        if email.startswith("org-"): #email org ile başlıyorsa ilerde bu değiştirilebilir tabi ki!
+        if email.startswith("org-"): # if email starts with org- then admin. This configuration can be changed later on by just editing this part.
             isAdmin = 1
         else :
             isAdmin = 0
@@ -203,7 +203,7 @@ def profile():
         error = ""
         success = ""
 
-        if request.method == "POST": #Edit butonuna bastın
+        if request.method == "POST": #Edit button is clicked here
             password = request.form.get("password", "").strip()
             name = request.form.get("name", "").strip()
             email = request.form.get("email", "").strip()
@@ -212,11 +212,11 @@ def profile():
             else:
                 conn = get_db_connection()
                 c = conn.cursor()
-                c.execute("UPDATE USER SET password=?, name=?, email=? WHERE username=?",(password, name, email,session["username"])) #burda direkt username de yollanır ama güvenlik açığı olmasın diye 
+                c.execute("UPDATE USER SET password=?, name=?, email=? WHERE username=?",(password, name, email,session["username"]))
                 conn.commit()
                 conn.close()
                 success = "Profile updated successfully."
-        user = get_user(session["username"]) #burda direkt username de yollanır ama güvenlik açığı olmasın diye 
+        user = get_user(session["username"]) # send user here
         return render_template(
             "profile.html",
             user=user,
@@ -242,7 +242,7 @@ def event_detail(eventID):
         "event.html",
         event=event,
         societies=societies,
-        show_navbar= False # Bu sayede artık eventte yuakrdakiler yok
+        show_navbar= False # in event dont show navbar, just 'return to index' is there. As assignment asked us to do.
     )
 
 
@@ -253,7 +253,7 @@ def logout():
 
 #AJAX CHECK ROUTLER BURDA
 
-@app.get("/checkusername/<username>")  #AJAX ENTEGRE OLDU  BURASI checkussername burda paramatere alıyor username olarak ve register.html de olay
+@app.get("/checkusername/<username>")  #AJAX integrated.  checkusername takes parameters here as username. And register.html will act accordingly.
 def check(username):
     exist = username_exists(username)
     response = ""

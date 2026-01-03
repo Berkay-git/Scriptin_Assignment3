@@ -48,13 +48,13 @@
     <title>Title</title>
     <script>
         function checkUsername(str){
-            var xhttp = new XMLHttpRequest(); //AJAX BURASI sayfa yenilemeden arka planda yapıyor işi
-            xhttp.onreadystatechange = function(){  //state değişince fonksiyon çalışması için 
-                if(this.readyState == 4 && this.status == 200){ //readyState == 4 istek tamam status 200 başarışı cevap demek
-                    document.getElementById("error").innerHTML = this.responseText; //response text bizim .py de döndürdüğümüz response
+            var xhttp = new XMLHttpRequest(); //AJAX here works without needing user to refresh the page.
+            xhttp.onreadystatechange = function(){  // when state changes, function works
+                if(this.readyState == 4 && this.status == 200){ //readyState == 4 means request and 200 is success
+                    document.getElementById("error").innerHTML = this.responseText; // is the response we send back.
                 }
             };
-            xhttp.open("GET", "/checkusername/" + str, true); //burda ki trye sayeseinde async çalışıyor program
+            xhttp.open("GET", "/checkusername/" + str, true); // with this, ajax works async.
             xhttp.send();
         }
     </script>
@@ -65,7 +65,7 @@
 <form method="POST" action="/register" class="styled-table" onsubmit="return validate()" name="registerform">
   <label>Username: </label>
       <input type="text" name="username" required onfocusout="checkUsername(this.value)" /><span id="error"></span><br/>
-      <!--onfocusout demek başka bir kutuya tıklayınca uyarı vermesi için-->
+      <!--onfocusout will work when another text box is selected in front end-->
     </br>
   <label>Password: </label>
   <input type="password" name="password" required/><br/>
